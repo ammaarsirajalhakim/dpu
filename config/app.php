@@ -105,6 +105,18 @@ return [
         ),
     ],
 
+        /*
+    |--------------------------------------------------------------------------
+    | Service Providers
+    |--------------------------------------------------------------------------
+    |
+    | These are the default framework service providers that register core
+    | Laravel services such as routing, sessions, cache, database, and views.
+    |
+    */
+
+    'providers' => Illuminate\Support\ServiceProvider::defaultProviders()->toArray(),
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver
