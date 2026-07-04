@@ -10,6 +10,7 @@ define('LARAVEL_START', microtime(true));
 
 $storagePath = $_ENV['APP_STORAGE_PATH'] ?? $_SERVER['APP_STORAGE_PATH'] ?? '/tmp/storage';
 $viewCompiledPath = $_ENV['VIEW_COMPILED_PATH'] ?? $_SERVER['VIEW_COMPILED_PATH'] ?? $storagePath . '/framework/views';
+$bootstrapCachePath = $storagePath . '/bootstrap/cache';
 
 foreach ([
     $storagePath,
@@ -21,13 +22,27 @@ foreach ([
     $storagePath . '/framework/sessions',
     $viewCompiledPath,
     $storagePath . '/logs',
+    $storagePath . '/bootstrap',
+    $bootstrapCachePath,
 ] as $path) {
     if (! is_dir($path)) {
         mkdir($path, 0777, true);
     }
 }
 
-$_ENV['VIEW_COMPILED_PATH'] = $_SERVER['VIEW_COMPILED_PATH'] = $viewCompiledPath;
+$runtimeEnv = [
+    'VIEW_COMPILED_PATH' => $viewCompiledPath,
+    'APP_PACKAGES_CACHE' => $bootstrapCachePath . '/packages.php',
+    'APP_SERVICES_CACHE' => $bootstrapCachePath . '/services.php',
+    'APP_CONFIG_CACHE' => $bootstrapCachePath . '/config.php',
+    'APP_ROUTES_CACHE' => $bootstrapCachePath . '/routes.php',
+    'APP_EVENTS_CACHE' => $bootstrapCachePath . '/events.php',
+];
+
+foreach ($runtimeEnv as $key => $value) {
+    $_ENV[$key] = $_SERVER[$key] = $value;
+    putenv($key . '=' . $value);
+}
 
 if (file_exists($maintenance = __DIR__ . '/../storage/framework/maintenance.php')) {
     require $maintenance;
