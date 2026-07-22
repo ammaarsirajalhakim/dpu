@@ -15,7 +15,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalUser = User::where('role', '!=', 'superadmin')->count();
+        $totalUser = User::count();
         $totalTugas = Tugas::count();
         $totalPenugasan = Penugasan::count();
 
